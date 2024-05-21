@@ -12,9 +12,9 @@
 #define MAIN_WINDOW_CLASS_BACKGROUND											( HBRUSH )( COLOR_WINDOW + 1 )
 #define MAIN_WINDOW_CLASS_MENU_NAME												NULL
 
-#define MAIN_WINDOW_EXTENDED_STYLE												WS_EX_CLIENTEDGE
+#define MAIN_WINDOW_EXTENDED_STYLE												0
 #define MAIN_WINDOW_TITLE														"Borderless"
-#define MAIN_WINDOW_STYLE														WS_OVERLAPPEDWINDOW
+#define MAIN_WINDOW_STYLE														WS_POPUP
 
 #define MAIN_WINDOW_MINIMUM_WIDTH												500
 #define MAIN_WINDOW_MINIMUM_HEIGHT												400
