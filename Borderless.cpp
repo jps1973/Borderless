@@ -218,76 +218,95 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 {
 	MSG msg;
 
-	WNDCLASSEX wcMain;
+	HWND hWndRunning;
 
 	// Clear message structure
 	ZeroMemory( &msg, sizeof( msg ) );
 
-	// Clear main window class structure
-	ZeroMemory( &wcMain, sizeof( wcMain ) );
+	// Attempt to find running instance of window
+	hWndRunning = FindWindow( MAIN_WINDOW_CLASS_NAME, MAIN_WINDOW_TITLE );
 
-	// Initialise main window class structure
-	wcMain.cbSize			= sizeof( WNDCLASSEX );
-	wcMain.lpfnWndProc		= MainWndProc;
-	wcMain.hInstance		= hInstance;
-	wcMain.lpszClassName	= MAIN_WINDOW_CLASS_NAME;
-	wcMain.style			= MAIN_WINDOW_CLASS_STYLE;
-	wcMain.hIcon			= MAIN_WINDOW_CLASS_ICON;
-	wcMain.hCursor			= MAIN_WINDOW_CLASS_CURSOR;
-	wcMain.hbrBackground	= MAIN_WINDOW_CLASS_BACKGROUND;
-	wcMain.lpszMenuName		= MAIN_WINDOW_CLASS_MENU_NAME;
-	wcMain.hIconSm			= MAIN_WINDOW_CLASS_ICON;
-
-	// Register main window class
-	if( RegisterClassEx( &wcMain ) )
+	// See if running instance of window was found
+	if( hWndRunning )
 	{
-		// Successfully registered main window class
-		HWND hWndMain;
+		// Successfully found running instance of window
 
-		// Create main window
-		hWndMain = CreateWindowEx( MAIN_WINDOW_EXTENDED_STYLE, MAIN_WINDOW_CLASS_NAME, MAIN_WINDOW_TITLE, MAIN_WINDOW_STYLE, CW_USEDEFAULT, CW_USEDEFAULT,  CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, NULL );
+		// Close running instance of window
+		SendMessage( hWndRunning, WM_CLOSE, ( WPARAM )NULL, ( LPARAM )NULL );
 
-		// Ensure that main window was created
-		if( hWndMain )
-		{
-			// Successfully created main window
-
-			// Show main window
-			ShowWindow( hWndMain, nCmdShow );
-
-			// Update main window
-			UpdateWindow( hWndMain );
-
-			// Message loop
-			while( GetMessage( &msg, NULL, 0, 0 ) > 0 )
-			{
-				// Translate message
-				TranslateMessage( &msg );
-
-				// Dispatch message
-				DispatchMessage( &msg );
-
-			}; // End of message loop
-
-		} // End of successfully created main window
-		else
-		{
-			// Unable to create main window
-
-			// Display error message
-			MessageBox( NULL, UNABLE_TO_CREATE_MAIN_WINDOW_ERROR_MESSAGE, ERROR_MESSAGE_CAPTION, ( MB_OK | MB_ICONERROR ) );
-
-		} // End of unable to create main window
-
-	} // End of successfully registered main window class
+	} // End of successfully found running instance of window
 	else
 	{
-		// Unable to register main window class
+		// Unable to find running instance of window
+		WNDCLASSEX wcMain;
 
-		// Display error message
-		MessageBox( NULL, UNABLE_TO_REGISTER_MAIN_WINDOW_CLASS_ERROR_MESSAGE, ERROR_MESSAGE_CAPTION, ( MB_OK | MB_ICONERROR ) );
+		// Clear main window class structure
+		ZeroMemory( &wcMain, sizeof( wcMain ) );
 
-	} // End of unable to register main window class
+		// Initialise main window class structure
+		wcMain.cbSize			= sizeof( WNDCLASSEX );
+		wcMain.lpfnWndProc		= MainWndProc;
+		wcMain.hInstance		= hInstance;
+		wcMain.lpszClassName	= MAIN_WINDOW_CLASS_NAME;
+		wcMain.style			= MAIN_WINDOW_CLASS_STYLE;
+		wcMain.hIcon			= MAIN_WINDOW_CLASS_ICON;
+		wcMain.hCursor			= MAIN_WINDOW_CLASS_CURSOR;
+		wcMain.hbrBackground	= MAIN_WINDOW_CLASS_BACKGROUND;
+		wcMain.lpszMenuName		= MAIN_WINDOW_CLASS_MENU_NAME;
+		wcMain.hIconSm			= MAIN_WINDOW_CLASS_ICON;
+
+		// Register main window class
+		if( RegisterClassEx( &wcMain ) )
+		{
+			// Successfully registered main window class
+			HWND hWndMain;
+
+			// Create main window
+			hWndMain = CreateWindowEx( MAIN_WINDOW_EXTENDED_STYLE, MAIN_WINDOW_CLASS_NAME, MAIN_WINDOW_TITLE, MAIN_WINDOW_STYLE, CW_USEDEFAULT, CW_USEDEFAULT,  CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, NULL );
+
+			// Ensure that main window was created
+			if( hWndMain )
+			{
+				// Successfully created main window
+
+				// Show main window
+				ShowWindow( hWndMain, nCmdShow );
+
+				// Update main window
+				UpdateWindow( hWndMain );
+
+				// Message loop
+				while( GetMessage( &msg, NULL, 0, 0 ) > 0 )
+				{
+					// Translate message
+					TranslateMessage( &msg );
+
+					// Dispatch message
+					DispatchMessage( &msg );
+
+				}; // End of message loop
+
+			} // End of successfully created main window
+			else
+			{
+				// Unable to create main window
+
+				// Display error message
+				MessageBox( NULL, UNABLE_TO_CREATE_MAIN_WINDOW_ERROR_MESSAGE, ERROR_MESSAGE_CAPTION, ( MB_OK | MB_ICONERROR ) );
+
+			} // End of unable to create main window
+
+		} // End of successfully registered main window class
+		else
+		{
+			// Unable to register main window class
+
+			// Display error message
+			MessageBox( NULL, UNABLE_TO_REGISTER_MAIN_WINDOW_CLASS_ERROR_MESSAGE, ERROR_MESSAGE_CAPTION, ( MB_OK | MB_ICONERROR ) );
+
+		} // End of unable to register main window class
+
+	} // End of unable to find running instance of window
 
 	return msg.wParam;
 
