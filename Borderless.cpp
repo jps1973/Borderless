@@ -2,10 +2,47 @@
 
 #include "Borderless.h"
 
+BOOL MainWindowMove( HWND hWndMain, int nLeft, int nTop )
+{
+	BOOL bResult = FALSE;
+
+	int nDesktopWindowWidth;
+	int nDesktopWindowHeight;
+	int nMaximumLeft;
+	int nMaximumTop;
+	RECT rcWorkArea;
+
+	// Get work area size
+	SystemParametersInfo( SPI_GETWORKAREA, 0, &rcWorkArea, 0 );
+
+	// Calculate desktop window size
+	nDesktopWindowWidth		= ( rcWorkArea.right - rcWorkArea.left );
+	nDesktopWindowHeight	= ( rcWorkArea.bottom - rcWorkArea.top );
+
+	// Calculate maximum window position
+	nMaximumLeft	= ( nDesktopWindowWidth - MAIN_WINDOW_WIDTH );
+	nMaximumTop		= ( nDesktopWindowHeight - MAIN_WINDOW_HEIGHT );
+
+	// Limit window position to fit on screen
+	nLeft	= ( ( nLeft < 0 ) ? 0 : nLeft );
+	nTop	= ( ( nTop < 0 ) ? 0 : nTop );
+	nLeft	= ( ( nLeft > nMaximumLeft ) ? nMaximumLeft : nLeft );
+	nTop	= ( ( nTop > nMaximumTop ) ? nMaximumTop : nTop );
+
+	// Move window
+	bResult = SetWindowPos( hWndMain, NULL, nLeft, nTop, 0, 0, ( SWP_NOSIZE | SWP_NOOWNERZORDER ) );
+
+	return bResult;
+
+} // End of function MainWindowMove
+
 // Main window procedure
 LRESULT CALLBACK MainWndProc( HWND hWndMain, UINT uMessage, WPARAM wParam, LPARAM lParam )
 {
 	LRESULT lr = 0;
+
+	static int s_nClickX;
+	static int s_nClickY;
 
 	// Select message
 	switch( uMessage )
@@ -56,6 +93,74 @@ LRESULT CALLBACK MainWndProc( HWND hWndMain, UINT uMessage, WPARAM wParam, LPARA
 			break;
 
 		} // End of a get min max info message
+		case WM_LBUTTONDOWN:
+		{
+			// A left mouse button down message
+
+			// Set mouse capture to main window
+			SetCapture( hWndMain );
+
+			// Store static variables
+			s_nClickX = GET_X_LPARAM( lParam );
+			s_nClickY = GET_Y_LPARAM( lParam );
+
+			// Break out of switch
+			break;
+
+		} // End of a left mouse button down message
+		case WM_LBUTTONUP:
+		{
+			// A left mouse button up message
+
+			// Release mouse capture
+			ReleaseCapture();
+
+			// Break out of switch
+			break;
+
+		} // End of a left mouse button up message
+		case WM_MOUSEMOVE:
+		{
+			// A mouse move message
+
+			// See if main window has mouse capture
+			if( GetCapture() == hWndMain )
+			{
+				// Main window has mouse capture
+				RECT rc;
+				int nMouseX;
+				int nMouseY;
+				int nWindowX;
+				int nWindowY;
+
+				// Get window position
+				GetWindowRect( hWndMain, &rc );
+
+				// Store mouse position
+				nMouseX = GET_X_LPARAM( lParam );
+				nMouseY = GET_Y_LPARAM( lParam );
+
+				// Calculate window position
+				nWindowX = ( ( rc.left + nMouseX ) - s_nClickX );
+				nWindowY = ( ( rc.top + nMouseY ) - s_nClickY );
+
+				// Move window
+				MainWindowMove( hWndMain, nWindowX, nWindowY );
+
+			} // End of main window has mouse capture
+			else
+			{
+				// Main window does not have mouse capture
+
+				// Call default procedure
+				lr = DefWindowProc( hWndMain, uMessage, wParam, lParam );
+
+			} // End of main window does not have mouse capture
+
+			// Break out of switch
+			break;
+
+		} // End of a mouse move message
 		case WM_DROPFILES:
 		{
 			// A drop files message
@@ -262,7 +367,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 			HWND hWndMain;
 
 			// Create main window
-			hWndMain = CreateWindowEx( MAIN_WINDOW_EXTENDED_STYLE, MAIN_WINDOW_CLASS_NAME, MAIN_WINDOW_TITLE, MAIN_WINDOW_STYLE, 100, 100,  100, 100, NULL, NULL, hInstance, NULL );
+			hWndMain = CreateWindowEx( MAIN_WINDOW_EXTENDED_STYLE, MAIN_WINDOW_CLASS_NAME, MAIN_WINDOW_TITLE, MAIN_WINDOW_STYLE, MAIN_WINDOW_LEFT, MAIN_WINDOW_TOP, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT, NULL, NULL, hInstance, NULL );
 
 			// Ensure that main window was created
 			if( hWndMain )

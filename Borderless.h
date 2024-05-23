@@ -3,6 +3,7 @@
 #pragma once
 
 #include <windows.h>
+#include <windowsx.h>
 
 #define MAIN_WINDOW_CLASS_NAME													"Main Borderless Window Class"
 
@@ -14,7 +15,12 @@
 
 #define MAIN_WINDOW_EXTENDED_STYLE												0
 #define MAIN_WINDOW_TITLE														"Borderless"
-#define MAIN_WINDOW_STYLE														WS_POPUP
+#define MAIN_WINDOW_STYLE														WS_POPUP | WS_BORDER
+
+#define MAIN_WINDOW_LEFT														100
+#define MAIN_WINDOW_TOP															100
+#define MAIN_WINDOW_WIDTH														500
+#define MAIN_WINDOW_HEIGHT														400
 
 #define MAIN_WINDOW_MINIMUM_WIDTH												500
 #define MAIN_WINDOW_MINIMUM_HEIGHT												400
