@@ -32,6 +32,10 @@ BOOL MainWindowMove( HWND hWndMain, int nLeft, int nTop )
 	// Move window
 	bResult = SetWindowPos( hWndMain, NULL, nLeft, nTop, 0, 0, ( SWP_NOSIZE | SWP_NOOWNERZORDER ) );
 
+	// Save window position
+	RegistrySetValue( REGISTRY_TOP_LEVEL_KEY, REGISTRY_SUB_KEY, REGISTRY_LEFT_VALUE_NAME, nLeft );
+	RegistrySetValue( REGISTRY_TOP_LEVEL_KEY, REGISTRY_SUB_KEY, REGISTRY_TOP_VALUE_NAME, nTop );
+
 	return bResult;
 
 } // End of function MainWindowMove
@@ -367,12 +371,23 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 			HWND hWndMain;
 
 			// Create main window
-			hWndMain = CreateWindowEx( MAIN_WINDOW_EXTENDED_STYLE, MAIN_WINDOW_CLASS_NAME, MAIN_WINDOW_TITLE, MAIN_WINDOW_STYLE, MAIN_WINDOW_LEFT, MAIN_WINDOW_TOP, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT, NULL, NULL, hInstance, NULL );
+			hWndMain = CreateWindowEx( MAIN_WINDOW_EXTENDED_STYLE, MAIN_WINDOW_CLASS_NAME, MAIN_WINDOW_TITLE, MAIN_WINDOW_STYLE, MAIN_WINDOW_DEFAULT_LEFT, MAIN_WINDOW_DEFAULT_TOP, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT, NULL, NULL, hInstance, NULL );
 
 			// Ensure that main window was created
 			if( hWndMain )
 			{
 				// Successfully created main window
+				int nLeft;
+				int nTop;
+
+				// Get initial window position
+				nLeft	= RegistryGetValue( REGISTRY_TOP_LEVEL_KEY, REGISTRY_SUB_KEY, REGISTRY_LEFT_VALUE_NAME, MAIN_WINDOW_DEFAULT_LEFT );
+				nTop	= RegistryGetValue( REGISTRY_TOP_LEVEL_KEY, REGISTRY_SUB_KEY, REGISTRY_TOP_VALUE_NAME, MAIN_WINDOW_DEFAULT_TOP );
+
+				// Move window
+				MainWindowMove( hWndMain, nLeft, nTop );
+				// Note that the move function checks that the left and top values are valid
+				// That is why we didn't create the window at this position
 
 				// Show main window
 				ShowWindow( hWndMain, nCmdShow );
