@@ -5,6 +5,9 @@
 #include <windows.h>
 #include <windowsx.h>
 
+#include "Ascii.h"
+#include "Common.h"
+
 #include "Registry.h"
 
 #define MAIN_WINDOW_CLASS_NAME													"Main Borderless Window Class"
@@ -26,13 +29,6 @@
 
 #define MAIN_WINDOW_MINIMUM_WIDTH												500
 #define MAIN_WINDOW_MINIMUM_HEIGHT												400
-
-#define STRING_LENGTH															2048
-
-#define ABOUT_MESSAGE_CAPTION													"About"
-#define INFORMATION_MESSAGE_CAPTION												"Information"
-#define ERROR_MESSAGE_CAPTION													"Error"
-#define WARNING_MESSAGE_CAPTION													"Warning"
 
 #define REGISTRY_TOP_LEVEL_KEY													HKEY_CURRENT_USER
 #define REGISTRY_SUB_KEY														"SOFTWARE\\Jim Smith\\Borderless"
