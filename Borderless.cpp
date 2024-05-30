@@ -40,6 +40,31 @@ BOOL MainWindowMove( HWND hWndMain, int nLeft, int nTop )
 
 } // End of function MainWindowMove
 
+int ShowAboutMessage( HWND hWndParent )
+{
+	int nResult = 0;
+
+	MSGBOXPARAMS mbp;
+
+	// Clear message box parameter structure
+	ZeroMemory( &mbp, sizeof( mbp ) );
+
+	// Initialise message box parameter structure
+	mbp.cbSize		= sizeof( MSGBOXPARAMS );
+	mbp.hwndOwner	= hWndParent;
+	mbp.hInstance	= NULL;
+	mbp.lpszText	= ABOUT_MESSAGE_TEXT;
+	mbp.lpszCaption	= ABOUT_MESSAGE_CAPTION;
+	mbp.dwStyle		= ( MB_OK | MB_USERICON );
+	mbp.lpszIcon	= MAIN_WINDOW_CLASS_ICON_NAME;
+
+	// Show message box
+	nResult = MessageBoxIndirect( &mbp );
+
+	return nResult;
+
+} // End of function ShowAboutMessage
+
 // Main window procedure
 LRESULT CALLBACK MainWndProc( HWND hWndMain, UINT uMessage, WPARAM wParam, LPARAM lParam )
 {
@@ -221,6 +246,94 @@ LRESULT CALLBACK MainWndProc( HWND hWndMain, UINT uMessage, WPARAM wParam, LPARA
 			// Select command
 			switch( LOWORD( wParam ) )
 			{
+				case( BUTTON_WINDOWS_BROWSE_BUTTON + BUTTON_WINDOWS_FIRST_BUTTON_ID ):
+				{
+					// The browse button has been pressed
+
+					// Display message
+					MessageBox( hWndMain, "The browse button has been pressed", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					// Break out of switch
+					break;
+
+				} // End of the browse button has been pressed
+				case( BUTTON_WINDOWS_FILTER_BUTTON + BUTTON_WINDOWS_FIRST_BUTTON_ID ):
+				{
+					// The filter button has been pressed
+
+					// Display message
+					MessageBox( hWndMain, "The filter button has been pressed", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					// Break out of switch
+					break;
+
+				} // End of the filter button has been pressed
+				case( BUTTON_WINDOWS_COPY_BUTTON + BUTTON_WINDOWS_FIRST_BUTTON_ID ):
+				{
+					// The copy button has been pressed
+
+					// Display message
+					MessageBox( hWndMain, "The copy button has been pressed", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					// Break out of switch
+					break;
+
+				} // End of the copy button has been pressed
+				case( BUTTON_WINDOWS_MOVE_BUTTON + BUTTON_WINDOWS_FIRST_BUTTON_ID ):
+				{
+					// The move button has been pressed
+
+					// Display message
+					MessageBox( hWndMain, "The move button has been pressed", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					// Break out of switch
+					break;
+
+				} // End of the move button has been pressed
+				case( BUTTON_WINDOWS_RENAME_BUTTON + BUTTON_WINDOWS_FIRST_BUTTON_ID ):
+				{
+					// The rename button has been pressed
+
+					// Display message
+					MessageBox( hWndMain, "The rename button has been pressed", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					// Break out of switch
+					break;
+
+				} // End of the rename button has been pressed
+				case( BUTTON_WINDOWS_DELETE_BUTTON + BUTTON_WINDOWS_FIRST_BUTTON_ID ):
+				{
+					// The delete button has been pressed
+
+					// Display message
+					MessageBox( hWndMain, "The delete button has been pressed", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					// Break out of switch
+					break;
+
+				} // End of the delete button has been pressed
+				case( BUTTON_WINDOWS_ABOUT_BUTTON + BUTTON_WINDOWS_FIRST_BUTTON_ID ):
+				{
+					// The about button has been pressed
+
+					// Show about message
+					ShowAboutMessage( hWndMain );
+
+					// Break out of switch
+					break;
+
+				} // End of the about button has been pressed
+				case( BUTTON_WINDOWS_EXIT_BUTTON + BUTTON_WINDOWS_FIRST_BUTTON_ID ):
+				{
+					// The exit button has been pressed
+
+					// Destroy window
+					DestroyWindow( hWndMain );
+
+					// Break out of switch
+					break;
+
+				} // End of the exit button has been pressed
 				default:
 				{
 					// Default command
@@ -340,8 +453,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 	{
 		// Successfully found running instance of window
 
-		// Close running instance of window
-		SendMessage( hWndRunning, WM_CLOSE, ( WPARAM )NULL, ( LPARAM )NULL );
+		// Bring running instance of window to top
+		BringWindowToTop( hWndRunning );
 
 	} // End of successfully found running instance of window
 	else
@@ -379,6 +492,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 				// Successfully created main window
 				int nLeft;
 				int nTop;
+				int nButtonWindowTop;
+				HFONT hFont;
 
 				// Get initial window position
 				nLeft	= RegistryGetValue( REGISTRY_TOP_LEVEL_KEY, REGISTRY_SUB_KEY, REGISTRY_LEFT_VALUE_NAME, MAIN_WINDOW_DEFAULT_LEFT );
@@ -388,6 +503,15 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 				MainWindowMove( hWndMain, nLeft, nTop );
 				// Note that the move function checks that the left and top values are valid
 				// That is why we didn't create the window at this position
+
+				// Get font
+				hFont = ( HFONT )GetStockObject( DEFAULT_GUI_FONT );
+
+				// Calculate button window position
+				nButtonWindowTop = ( MAIN_WINDOW_HEIGHT - ( MAIN_WINDOW_SEPARATOR_SIZE + BUTTON_WINDOWS_BUTTON_HEIGHT ) );
+
+				// Create button windows
+				ButtonWindowsCreate( hWndMain, hInstance, hFont, nButtonWindowTop, MAIN_WINDOW_SEPARATOR_SIZE );
 
 				// Show main window
 				ShowWindow( hWndMain, nCmdShow );

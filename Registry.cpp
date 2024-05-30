@@ -2,9 +2,6 @@
 
 #include "Registry.h"
 
-// Global variables
-HWND g_hWnd;
-
 DWORD RegistryGetValue( HKEY hKeyTopLevel, LPCTSTR lpszSubKey, LPCTSTR lpszValueName, DWORD dwDefaultValue )
 {
 	DWORD dwResult;
