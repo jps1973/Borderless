@@ -36,5 +36,3 @@ typedef enum ButtonWindowsButtons
 } BUTTON_WINDOWS_BUTTONS;
 
 BOOL ButtonWindowsCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont, int nTop, int nSeparatorSize );
-
-BOOL ButtonWindowsMove( int nTop, int nSeparatorSize );

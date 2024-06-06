@@ -79,25 +79,41 @@ LRESULT CALLBACK MainWndProc( HWND hWndMain, UINT uMessage, WPARAM wParam, LPARA
 		case WM_CREATE:
 		{
 			// A create message
+			HINSTANCE hInstance;
+			int nStatusListBoxWindowLeft;
+			int nStatusListBoxWindowTop;
+			int nStatusListBoxWindowWidth;
+			int nStatusListBoxWindowHeight;
+
+			// Get instance
+			hInstance = ( ( LPCREATESTRUCT )lParam )->hInstance;
+
+			// Calculate status list box window size
+			nStatusListBoxWindowWidth	= ( MAIN_WINDOW_WIDTH - ( MAIN_WINDOW_SEPARATOR_SIZE + MAIN_WINDOW_SEPARATOR_SIZE ) );
+			nStatusListBoxWindowHeight	= STATUS_LIST_BOX_WINDOW_HEIGHT;
+
+			// Calculate status list box window position
+			nStatusListBoxWindowLeft	= MAIN_WINDOW_SEPARATOR_SIZE;
+			nStatusListBoxWindowTop		= ( MAIN_WINDOW_HEIGHT - ( nStatusListBoxWindowHeight + MAIN_WINDOW_SEPARATOR_SIZE + BUTTON_WINDOWS_BUTTON_HEIGHT + MAIN_WINDOW_SEPARATOR_SIZE ) );
+
+			// Create status list box window
+			if( StatusListBoxWindowCreate( hWndMain, hInstance, nStatusListBoxWindowLeft, nStatusListBoxWindowTop, nStatusListBoxWindowWidth, nStatusListBoxWindowHeight ) )
+			{
+				// Successfully created status list box window
+				HFONT hFont;
+				
+				// Get font
+				hFont = ( HFONT )GetStockObject( DEFAULT_GUI_FONT );
+
+				// Set status list box window font
+				StatusListBoxWindowSetFont( hFont );
+
+			} // End of successfully created status list box window
 
 			// Break out of switch
 			break;
 
 		} // End of a create message
-		case WM_SIZE:
-		{
-			// A size message
-			int nClientWidth;
-			int nClientHeight;
-
-			// Store client width and height
-			nClientWidth	= ( int )LOWORD( lParam );
-			nClientHeight	= ( int )HIWORD( lParam );
-
-			// Break out of switch
-			break;
-
-		} // End of a size message
 		case WM_ACTIVATE:
 		{
 			// An activate message
@@ -382,10 +398,10 @@ LRESULT CALLBACK MainWndProc( HWND hWndMain, UINT uMessage, WPARAM wParam, LPARA
 		case WM_NOTIFY:
 		{
 			// A notify message
-			LPNMHDR lpNmHdr;
+			//LPNMHDR lpNmHdr;
 
 			// Get notify message handler
-			lpNmHdr = ( LPNMHDR )lParam;
+			//lpNmHdr = ( LPNMHDR )lParam;
 
 			// Source window is lpNmHdr->hwndFrom
 
@@ -396,6 +412,32 @@ LRESULT CALLBACK MainWndProc( HWND hWndMain, UINT uMessage, WPARAM wParam, LPARA
 			break;
 
 		} // End of a notify message
+		case WM_CTLCOLORLISTBOX:
+		{
+			// A control color list box message
+
+			// See if message is from status list box window
+			if( IsStatusListBoxWindow( ( HWND )lParam ) )
+			{
+				// Message is from status list box window
+
+				// Control color of status list box window
+				lr = StatusListBoxWindowControlColor( wParam );
+
+			} // End of message is from status list box window
+			else
+			{
+				// Message is not from status list box window
+
+				// Call default window procedure
+				lr = DefWindowProc( hWndMain, uMessage, wParam, lParam );
+
+			} // End of message is not from status list box window
+
+			// Break out of switch
+			break;
+
+		} // End of a control color list box message
 		case WM_CLOSE:
 		{
 			// A close message
@@ -512,6 +554,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 
 				// Create button windows
 				ButtonWindowsCreate( hWndMain, hInstance, hFont, nButtonWindowTop, MAIN_WINDOW_SEPARATOR_SIZE );
+
+				// Add about text to status list box window
+				StatusListBoxWindowAddText( ABOUT_MESSAGE_TEXT );
 
 				// Show main window
 				ShowWindow( hWndMain, nCmdShow );

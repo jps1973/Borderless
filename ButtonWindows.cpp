@@ -48,11 +48,3 @@ BOOL ButtonWindowsCreate( HWND hWndParent, HINSTANCE hInstance, HFONT hFont, int
 	return bResult;
 
 } // End of function ButtonWindowsCreate
-
-BOOL ButtonWindowsMove( int nTop, int nSeparatorSize )
-{
-	BOOL bResult = FALSE;
-
-	return bResult;
-
-} // End of function ButtonWindowsMove

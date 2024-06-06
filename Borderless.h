@@ -11,6 +11,7 @@
 #include "Registry.h"
 
 #include "ButtonWindows.h"
+#include "StatusListBoxWindow.h"
 
 #define MAIN_WINDOW_CLASS_NAME													"Main Borderless Window Class"
 
@@ -44,7 +45,7 @@
 																				"\r\n"								\
 																				"Written by Jim Smith\r\n"			\
 																				"\r\n"								\
-																				"May 2024"
+																				"June 2024"
 
 #define UNABLE_TO_CREATE_MAIN_WINDOW_ERROR_MESSAGE								"Unable to create main window"
 #define UNABLE_TO_REGISTER_MAIN_WINDOW_CLASS_ERROR_MESSAGE						"Unable to register main window class"
