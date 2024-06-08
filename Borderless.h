@@ -11,6 +11,7 @@
 #include "Registry.h"
 
 #include "ButtonWindows.h"
+#include "FileListBoxWindow.h"
 #include "StatusListBoxWindow.h"
 
 #define MAIN_WINDOW_CLASS_NAME													"Main Borderless Window Class"

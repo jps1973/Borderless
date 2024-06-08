@@ -101,12 +101,33 @@ LRESULT CALLBACK MainWndProc( HWND hWndMain, UINT uMessage, WPARAM wParam, LPARA
 			{
 				// Successfully created status list box window
 				HFONT hFont;
-				
+				int nFileListBoxWindowLeft;
+				int nFileListBoxWindowTop;
+				int nFileListBoxWindowWidth;
+				int nFileListBoxWindowHeight;
+
 				// Get font
 				hFont = ( HFONT )GetStockObject( DEFAULT_GUI_FONT );
 
 				// Set status list box window font
 				StatusListBoxWindowSetFont( hFont );
+
+				// Calculate file list box window size
+				nFileListBoxWindowWidth		= ( MAIN_WINDOW_WIDTH - ( MAIN_WINDOW_SEPARATOR_SIZE + MAIN_WINDOW_SEPARATOR_SIZE ) );
+				nFileListBoxWindowHeight	= ( MAIN_WINDOW_HEIGHT - ( MAIN_WINDOW_SEPARATOR_SIZE + MAIN_WINDOW_SEPARATOR_SIZE + STATUS_LIST_BOX_WINDOW_HEIGHT + MAIN_WINDOW_SEPARATOR_SIZE + BUTTON_WINDOWS_BUTTON_HEIGHT + MAIN_WINDOW_SEPARATOR_SIZE ) );
+
+				// Calculate file list box window position
+				nFileListBoxWindowLeft	= MAIN_WINDOW_SEPARATOR_SIZE;
+				nFileListBoxWindowTop	= MAIN_WINDOW_SEPARATOR_SIZE;
+
+				// Create file list box window
+				if( FileListBoxWindowCreate( hWndMain, hInstance, nFileListBoxWindowLeft, nFileListBoxWindowTop, nFileListBoxWindowWidth, nFileListBoxWindowHeight ) )
+				{
+					// Successfully created status list box window
+					// Set file list box window font
+					FileListBoxWindowSetFont( hFont );
+
+				} // End of successfully created file list box window
 
 			} // End of successfully created status list box window
 
