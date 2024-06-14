@@ -48,8 +48,8 @@ BOOL RegistrySetValue( HKEY hKeyTopLevel, LPCTSTR lpszSubKey, LPCTSTR lpszValueN
 
 	HKEY hKeySub;
 
-	// Open registry sub-key
-	if( RegOpenKeyEx( hKeyTopLevel, lpszSubKey, 0, KEY_ALL_ACCESS, &hKeySub ) == ERROR_SUCCESS )
+	// Create (or open) registry sub-key
+	if( RegCreateKeyEx( hKeyTopLevel, lpszSubKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKeySub, NULL ) == ERROR_SUCCESS )
 	{
 		// Successfully opened registry sub-key
 		DWORD dwSize = sizeof( dwValue );
